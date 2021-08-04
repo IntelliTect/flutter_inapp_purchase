@@ -70,8 +70,8 @@ class FlutterInappPurchase {
     if (_platform.isAndroid) {
       final String? result = await _channel.invokeMethod('consumeAllItems');
       return result;
-    } else if (_platform.isIOS) {
-      return 'no-ops in ios';
+    } else if (_platform.isIOS || _platform.isMacOS) {
+      return 'no-ops in ios/mac';
     }
     throw PlatformException(
         code: _platform.operatingSystem, message: "platform not supported");
@@ -86,7 +86,7 @@ class FlutterInappPurchase {
       await _setPurchaseListener();
       final String? result = await _channel.invokeMethod('initConnection');
       return result;
-    } else if (_platform.isIOS) {
+    } else if (_platform.isIOS || _platform.isMacOS) {
       await _setPurchaseListener();
       final String? result = await _channel.invokeMethod('canMakePayments');
       return result;
@@ -109,7 +109,7 @@ class FlutterInappPurchase {
         },
       );
       return extractItems(result);
-    } else if (_platform.isIOS) {
+    } else if (_platform.isIOS || _platform.isMacOS) {
       dynamic result = await _channel.invokeMethod(
         'getItems',
         {
@@ -138,7 +138,7 @@ class FlutterInappPurchase {
       );
 
       return extractItems(result);
-    } else if (_platform.isIOS) {
+    } else if (_platform.isIOS || _platform.isMacOS) {
       dynamic result = await _channel.invokeMethod(
         'getItems',
         {
@@ -177,7 +177,7 @@ class FlutterInappPurchase {
 
       return results.reduce((result1, result2) =>
           extractPurchased(result1)! + extractPurchased(result2)!);
-    } else if (_platform.isIOS) {
+    } else if (_platform.isIOS || _platform.isMacOS) {
       dynamic result = await _channel.invokeMethod('getAvailableItems');
 
       return extractPurchased(json.encode(result));
@@ -206,7 +206,7 @@ class FlutterInappPurchase {
       );
 
       return extractPurchased(result1)! + extractPurchased(result2)!;
-    } else if (_platform.isIOS) {
+    } else if (_platform.isIOS || _platform.isMacOS) {
       dynamic result = await _channel.invokeMethod('getAvailableItems');
 
       return extractPurchased(json.encode(result));
@@ -236,7 +236,7 @@ class FlutterInappPurchase {
         'obfuscatedProfileId': obfuscatedProfileIdAndroid,
         'purchaseToken': purchaseTokenAndroid,
       });
-    } else if (_platform.isIOS) {
+    } else if (_platform.isIOS || _platform.isMacOS) {
       return await _channel.invokeMethod('buyProduct', <String, dynamic>{
         'sku': sku,
         'forUser': obfuscatedAccountId,
@@ -271,7 +271,7 @@ class FlutterInappPurchase {
         'obfuscatedProfileId': obfuscatedProfileIdAndroid,
         'purchaseToken': purchaseTokenAndroid,
       });
-    } else if (_platform.isIOS) {
+    } else if (_platform.isIOS || _platform.isMacOS) {
       return await _channel.invokeMethod('buyProduct', <String, dynamic>{
         'sku': sku,
       });
@@ -285,7 +285,7 @@ class FlutterInappPurchase {
   ///
   /// @returns {Future<String>}
   Future<String?> getPromotedProductIOS() async {
-    if (_platform.isIOS) {
+    if (_platform.isIOS || _platform.isMacOS) {
       String? result = await _channel.invokeMethod('getPromotedProduct');
       return result;
     }
@@ -297,7 +297,7 @@ class FlutterInappPurchase {
   ///
   /// @returns {Future} will receive result from `purchasePromoted` listener.
   Future requestPromotedProductIOS() async {
-    if (_platform.isIOS) {
+    if (_platform.isIOS || _platform.isMacOS) {
       return await _channel.invokeMethod('requestPromotedProduct');
     }
     throw PlatformException(
@@ -312,7 +312,7 @@ class FlutterInappPurchase {
     String forUser,
     Map<String, dynamic> withOffer,
   ) async {
-    if (_platform.isIOS) {
+    if (_platform.isIOS || _platform.isMacOS) {
       return await _channel
           .invokeMethod('requestProductWithOfferIOS', <String, dynamic>{
         'sku': sku,
@@ -331,7 +331,7 @@ class FlutterInappPurchase {
     String sku,
     int quantity,
   ) async {
-    if (_platform.isIOS) {
+    if (_platform.isIOS || _platform.isMacOS) {
       return await _channel
           .invokeMethod('requestPurchaseWithQuantity', <String, dynamic>{
         'sku': sku,
@@ -346,7 +346,7 @@ class FlutterInappPurchase {
   ///
   /// @returns {Future<List<PurchasedItem>>}
   Future<List<PurchasedItem>?> getPendingTransactionsIOS() async {
-    if (_platform.isIOS) {
+    if (_platform.isIOS || _platform.isMacOS) {
       dynamic result = await _channel.invokeMethod(
         'getPendingTransactions',
       );
@@ -367,7 +367,7 @@ class FlutterInappPurchase {
       });
 
       return result;
-    } else if (_platform.isIOS) {
+    } else if (_platform.isIOS || _platform.isMacOS) {
       return 'no-ops in ios';
     }
     throw PlatformException(
@@ -393,7 +393,7 @@ class FlutterInappPurchase {
         'token': token,
       });
       return result;
-    } else if (_platform.isIOS) {
+    } else if (_platform.isIOS || _platform.isMacOS) {
       return 'no-ops in ios';
     }
     throw PlatformException(
@@ -408,7 +408,7 @@ class FlutterInappPurchase {
       final String? result = await _channel.invokeMethod('endConnection');
       _removePurchaseListener();
       return result;
-    } else if (_platform.isIOS) {
+    } else if (_platform.isIOS || _platform.isMacOS) {
       final String? result = await _channel.invokeMethod('endConnection');
       _removePurchaseListener();
       return result;
@@ -425,7 +425,7 @@ class FlutterInappPurchase {
   Future<String?> finishTransactionIOS(String transactionId) async {
     if (_platform.isAndroid) {
       return 'no ops in android';
-    } else if (_platform.isIOS) {
+    } else if (_platform.isIOS || _platform.isMacOS) {
       String? result =
           await _channel.invokeMethod('finishTransaction', <String, dynamic>{
         'transactionIdentifier': transactionId,
@@ -455,7 +455,7 @@ class FlutterInappPurchase {
         });
         return result;
       }
-    } else if (_platform.isIOS) {
+    } else if (_platform.isIOS || _platform.isMacOS) {
       String? result =
           await _channel.invokeMethod('finishTransaction', <String, dynamic>{
         'transactionIdentifier': purchasedItem.transactionId,
@@ -472,7 +472,7 @@ class FlutterInappPurchase {
   Future<String?> clearTransactionIOS() async {
     if (_platform.isAndroid) {
       return 'no-ops in android.';
-    } else if (_platform.isIOS) {
+    } else if (_platform.isIOS || _platform.isMacOS) {
       String? result = await _channel.invokeMethod('clearTransaction');
       return result;
     }
@@ -485,7 +485,7 @@ class FlutterInappPurchase {
   Future<List<IAPItem>> getAppStoreInitiatedProducts() async {
     if (_platform.isAndroid) {
       return <IAPItem>[];
-    } else if (_platform.isIOS) {
+    } else if (_platform.isIOS || _platform.isMacOS) {
       dynamic result =
           await _channel.invokeMethod('getAppStoreInitiatedProducts');
 
@@ -505,7 +505,7 @@ class FlutterInappPurchase {
     Duration duration: const Duration(days: 30),
     Duration grace: const Duration(days: 3),
   }) async {
-    if (_platform.isIOS) {
+    if (_platform.isIOS || _platform.isMacOS) {
       var history =
           await (getPurchaseHistory() as FutureOr<List<PurchasedItem>>);
 
